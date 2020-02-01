@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "./libs/dynamodb-lib";
-import { success, failure } from "./libs/response-lib";
+import * as dynamoDbLib from "../libs/dynamodb-lib";
+import { success, failure } from "../libs/response-lib";
 
 export async function main(event, context) {
 	const data = JSON.parse(event.body);
@@ -15,11 +15,11 @@ export async function main(event, context) {
 		//Remove trailing ,
 		updateExp = updateExp.substring(0, updateExp.length - 1);
 		const params = {
-			TableName: process.env.tableName,
+			TableName: process.env.subscriberUsersTbl,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
-			// - 'place_id': Business ID identifying Google id
-			Key: {
-				place_id: event.pathParameters.place_id,
+    // - 'mobile_number': Mobile number identifying user
+		Key: {
+			mobile_number: event.pathParameters.mobile_number,
 			},
 			// 'UpdateExpression' defines the attributes to be updated
 			// 'ExpressionAttributeValues' defines the value in the update expression

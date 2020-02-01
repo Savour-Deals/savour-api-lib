@@ -1,13 +1,13 @@
 {
-  "name": "lasso-app-api",
+  "name": "savour-button-api",
   "version": "1.1.0",
-  "description": "A Node.js starter for the Serverless Framework with async/await and unit test support",
+  "description": "A Node.js API for accessing the SAvour Deals text message button backend",
   "main": "handler.js",
   "scripts": {
     "test": "serverless-bundle test"
   },
   "author": "",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"

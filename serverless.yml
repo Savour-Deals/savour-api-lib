@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: lasso-app-api
+service: savour-button-api
 
 # Create an optimized package for our functions 
 package:
@@ -21,7 +21,9 @@ provider:
   # commit your .env.
   #
   environment:
-   tableName: businesses
+    businessesTbl: businesses
+    businesUsersTbl: business_users
+    subscriberUsersTbl: subscriber_users
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -44,44 +46,153 @@ functions:
   # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
   #     domain api call
   # - authorizer: authenticate using the AWS IAM role
-  create:
-    handler: create.main
+
+  ######################################################
+  #####                                            #####
+  #####          businesses table API              #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /businesses
+  # - method: POST request
+  create-business:
+    handler: businesses_API/create.main
     events:
       - http:
-          path: businesss
+          path: businesses
           method: post
           cors: true
           authorizer: aws_iam
-  get:
+  get-business:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is /businesses/{id}
     # - method: GET request
-    handler: get.main
+    handler: businesses_API/get.main
     events:
       - http:
           path: businesses/{place_id}
           method: get
           cors: true
           authorizer: aws_iam
-  update:
+  update-business:
     # Defines an HTTP API endpoint that calls the main function in update.js
     # - path: url path is /businesses/{place_id}
     # - method: PUT request
-    handler: update.main
+    handler: businesses_API/update.main
     events:
       - http:
           path: businesses/{place_id}
           method: put
           cors: true
           authorizer: aws_iam
-  delete:
+  delete-business:
     # Defines an HTTP API endpoint that calls the main function in delete.js
     # - path: url path is /businesses/{place_id}
     # - method: DELETE request
-    handler: delete.main
+    handler: businesses_API/delete.main
     events:
       - http:
           path: businesses/{place_id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+
+  ######################################################
+  #####                                            #####
+  #####          business users table API          #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /business_users
+  # - method: POST request
+  create-business-user:
+    handler: business_users_API/create.main
+    events:
+      - http:
+          path: business_users
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get-business-user:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is business_users/{uid}
+    # - method: GET request
+    handler: business_users_API/get.main
+    events:
+      - http:
+          path: business_users/{uid}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  update-business-user:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is business_users/{uid}
+    # - method: PUT request
+    handler: business_users_API/update.main
+    events:
+      - http:
+          path: business_users/{uid}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  delete-business-user:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is business_users/{uid}
+    # - method: DELETE request
+    handler: business_users_API/delete.main
+    events:
+      - http:
+          path: business_users/{uid}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+
+  ######################################################
+  #####                                            #####
+  #####          subscriber users table API        #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /subscriber_users
+  # - method: POST request
+  create-subscriber-user:
+    handler: subscriber_users_API/create.main
+    events:
+      - http:
+          path: subscriber_users
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get-subscriber-user:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is subscriber_users/{mobile_number}
+    # - method: GET request
+    handler: subscriber_users_API/get.main
+    events:
+      - http:
+          path: subscriber_users/{mobile_number}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  update-subscriber-user:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is subscriber_users/{mobile_number}
+    # - method: PUT request
+    handler: subscriber_users_API/update.main
+    events:
+      - http:
+          path: subscriber_users/{mobile_number}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  delete-subscriber-user:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is subscriber_users/{mobile_number}
+    # - method: DELETE request
+    handler: subscriber_users_API/delete.main
+    events:
+      - http:
+          path: subscriber_users/{mobile_number}
           method: delete
           cors: true
           authorizer: aws_iam

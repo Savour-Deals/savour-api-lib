@@ -1,0 +1,10 @@
+{
+  "pathParameters": {
+    "mobile_number": "+1234565432"
+  },
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}
