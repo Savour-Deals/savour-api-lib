@@ -24,6 +24,7 @@ provider:
     businessesTbl: businesses
     businesUsersTbl: business_users
     subscriberUsersTbl: subscriber_users
+    pushTbl: push_table
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -193,6 +194,56 @@ functions:
     events:
       - http:
           path: subscriber_users/{mobile_number}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+  
+  ######################################################
+  #####                                            #####
+  #####              push table API                #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /push_table
+  # - method: POST request
+  create-push-table:
+    handler: push_table_API/create.main
+    events:
+      - http:
+          path: push_table
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get-push-table:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is push_table/{uid}
+    # - method: GET request
+    handler: push_table_API/get.main
+    events:
+      - http:
+          path: push_table/g/{uid}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  get-all-push-table:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is push_table/{btn_id}
+    # - method: GET request
+    handler: push_table_API/get-all.main
+    events:
+      - http:
+          path: push_table/q/{btn_id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  delete-push-table:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is push_table/{uid}
+    # - method: DELETE request
+    handler: push_table_API/delete.main
+    events:
+      - http:
+          path: push_table/{uid}
           method: delete
           cors: true
           authorizer: aws_iam
