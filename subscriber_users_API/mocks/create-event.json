@@ -1,5 +1,5 @@
 {
-  "body": "{\"mobile_number\":\"+1234565432\",\"subscription_dict\":\"{}\"}",
+  "body": "{\"mobile_number\":\"+16124812069\",\"subscription_dict\":\"{}\"}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "USER-SUB-1234"

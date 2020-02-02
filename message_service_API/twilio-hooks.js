@@ -1,0 +1,172 @@
+import * as dynamoDbLib from "../libs/dynamodb-lib";
+
+const unsubStrings = ["stop", "cancel", "end", "quit", "stopall", "unsubscribe"];
+const subStrings = ['start', 'unstop', 'subscribe','sub'];
+
+async function updateSubscription(uNum, bInfo, subscribe){
+  const timestamp = new Date().toISOString();
+  console.log(bInfo);
+  console.log(uNum);
+  var bParams = {
+    TableName: process.env.businessesTbl,
+    // 'Key' defines the partition key and sort key of the item to be retrieved
+    // - 'place_id': id identifying business
+    Key: {place_id: bInfo.place_id},
+    UpdateExpression: 'SET subscriber_dict.#FIELD = :value',
+    ExpressionAttributeNames: {
+        '#FIELD': uNum,
+    },
+    ExpressionAttributeValues: {
+        ':value': {subscribed: subscribe, timestamp:timestamp}
+    },
+    ReturnValues: 'ALL_NEW'
+  };
+  var uParams = {
+    TableName: process.env.subscriberUsersTbl,
+    // 'Key' defines the partition key and sort key of the item to be retrieved
+    // - 'mobile_number': number identifying user
+    Key: {mobile_number: uNum},
+    UpdateExpression: 'SET subscription_dict.#FIELD = :value',
+    ExpressionAttributeNames: {
+        '#FIELD':  bInfo.place_id,
+    },
+    ExpressionAttributeValues: {
+      ':value': {subscribed: subscribe, timestamp:timestamp}
+    },
+    ReturnValues: 'ALL_NEW'
+  };
+  try {
+    await dynamoDbLib.call("update", bParams);
+  } catch (error) {
+    var dict = {};
+    dict[uNum] = {subscribed: subscribe, timestamp:timestamp};
+    const bParams = {
+      TableName: process.env.businessesTbl,
+      // 'Key' defines the partition key and sort key of the item to be retrieved
+      // - 'place_id': id identifying business
+      Key: {place_id: bInfo.place_id},
+      UpdateExpression: 'SET subscriber_dict = :value',
+      ExpressionAttributeValues: {
+          ':value': dict
+      },
+      ReturnValues: 'ALL_NEW'
+    };
+    await dynamoDbLib.call("update", bParams);
+  }
+  try {
+    await dynamoDbLib.call("update", uParams);
+  } catch (error) {
+    var dict2 = {};
+    dict2[bInfo.place_id] = {subscribed: subscribe, timestamp:timestamp};
+    const uParams = {
+      TableName: process.env.subscriberUsersTbl,
+      // 'Key' defines the partition key and sort key of the item to be retrieved
+      // - 'mobile_number': number identifying user
+      Key: {mobile_number: uNum},
+      UpdateExpression: 'SET subscription_dict = :value',
+      ExpressionAttributeValues: {
+        ':value': dict2
+      },
+      ReturnValues: 'ALL_NEW'
+    };
+    await dynamoDbLib.call("update", uParams);
+  }
+}
+
+async function unsubscribeUser(uNum, bNum){
+  const bParams = {
+    TableName: process.env.businessesTbl,
+    // 'Key' defines the partition key and sort key of the item to be retrieved
+    // - 'twilio_number': number identifying business
+    IndexName: "twilio_number-index",
+    KeyConditionExpression: "twilio_number = :t",
+    ExpressionAttributeValues: {
+      ":t": bNum
+    }
+  };
+  var businessInfo = await dynamoDbLib.call("query", bParams);
+  if (businessInfo.Items.length > 0) {
+    // business exists, continue
+    updateSubscription(uNum,businessInfo.Items[0], false);
+  }
+  //if the business does not exist then don't worry?
+}
+
+async function subscribeUser(uNum, bNum){
+  var message = '';
+  const bParams = {
+    TableName: process.env.businessesTbl,
+    // 'Key' defines the partition key and sort key of the item to be retrieved
+    // - 'twilio_number': number identifying business
+    IndexName: "twilio_number-index",
+    KeyConditionExpression: "twilio_number = :t",
+    ExpressionAttributeValues: {
+      ":t": bNum
+    }
+  };
+  const uParams = {
+    TableName: process.env.subscriberUsersTbl,
+    // 'Key' defines the partition key and sort key of the item to be retrieved
+    // - 'mobile_number': number identifying user
+    key: "mobile_number",
+    KeyConditionExpression: "mobile_number = :t",
+    ExpressionAttributeValues: {
+      ":t": uNum
+    }
+  };
+  var businessInfo = await dynamoDbLib.call("query", bParams);
+  if (businessInfo.Items.length > 0) {
+    // business exists, continue
+    businessInfo = businessInfo.Items[0];
+    var userInfo = await dynamoDbLib.call("query", uParams);
+    if (userInfo.Items.length > 0) {
+      // subscriber exists in DB, continue
+      var subDict = userInfo.Items[0].subscription_dict;
+      if(businessInfo.place_id in Object.keys(subDict)){
+        message = `You're already subscribed to our ${businessInfo.business_name} loyalty program! \u{1f923} Reply HELP for help or STOP to unsubscribe. Msg and Data Rates May Apply.`;
+      }else{
+        updateSubscription(uNum, businessInfo, true);
+        message = `Welcome back to our ${businessInfo.business_name} loyalty program! \u{1f64c} Reply HELP for help or STOP to unsubscribe. Msg and Data Rates May Apply.`;
+      }
+    }else{
+      // subscriber doesn't exist, create user and subscribe them to receive deals from this business
+      const params = {
+        TableName: process.env.subscriberUsersTbl,
+        Item: {
+          mobile_number: uNum,
+          subscription_dict: {}
+        }
+      };
+      await dynamoDbLib.call("put", params);
+      updateSubscription(uNum, businessInfo, true);
+      message = `Welcome to our ${businessInfo.business_name} loyalty program! \u{1f604} Show us this text today and get ${businessInfo.onboard_deal}!`;
+
+    }
+  } else {
+    // This is probably not likely? IDK
+    message = 'Sorry, that number is not associated with any of our Savour Loyalty Programs. \u{1F62C}';
+  }
+  return message;
+}
+
+export async function main(event, context) {
+  // console.log(event);
+  let bNum = event.To;
+  let uNum = event.From;
+  let eventMsg = event.Body;
+  var resp = '';
+  var respBody = '';
+  if (unsubStrings.includes(eventMsg.toLowerCase())){
+    unsubscribeUser(uNum,bNum);
+    return resp;
+  }
+  else if (subStrings.includes(eventMsg.toLowerCase())){
+    respBody = await subscribeUser(uNum,bNum);
+  }
+  else{
+    respBody = "Sorry, we don't recognize that command. Text SUB to subscribe and STOP to unsubscribe.";
+  }
+  console.log(`Response: ${respBody}`);
+  resp = `<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message>${respBody}</Message></Response>`;
+  return resp;
+}

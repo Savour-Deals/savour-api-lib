@@ -1,7 +1,7 @@
 {
-  "body": "{\"subscription_dict\":{\"subscribed\":true,\"timestamp\":\"2019-11-13T23:50:24.529394\"}}",
+  "body": "{\"subscription_dict\":{\"+17633249713\":{\"subscribed\":true,\"timestamp\":\"2019-11-13T23:50:24.529394\"}}}",
   "pathParameters": {
-    "mobile_number": "+1234565432"
+    "mobile_number": "+16124812069"
   },
   "requestContext": {
     "identity": {

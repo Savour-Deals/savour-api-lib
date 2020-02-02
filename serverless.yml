@@ -299,3 +299,20 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
+
+  ######################################################
+  #####                                            #####
+  #####       message service API                  #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in twilio-hookss.js
+  # - path: url path is /message_service/twilio_hooks
+  # - method: POST request
+  twilio-hooks:
+    handler: message_service_API/twilio-hooks.main
+    events:
+      - http:
+          path: message_service/twilio_hooks
+          method: post
+          cors: true
+          authorizer: aws_iam

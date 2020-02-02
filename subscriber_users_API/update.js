@@ -18,8 +18,8 @@ export async function main(event, context) {
 			TableName: process.env.subscriberUsersTbl,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'mobile_number': Mobile number identifying user
-		Key: {
-			mobile_number: event.pathParameters.mobile_number,
+			Key: {
+				mobile_number: event.pathParameters.mobile_number,
 			},
 			// 'UpdateExpression' defines the attributes to be updated
 			// 'ExpressionAttributeValues' defines the value in the update expression
