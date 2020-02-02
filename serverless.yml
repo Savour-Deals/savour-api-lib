@@ -25,6 +25,7 @@ provider:
     businesUsersTbl: business_users
     subscriberUsersTbl: subscriber_users
     pushTbl: push_table
+    unclaimedButtonTbl: unclaimed_buttons
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -244,6 +245,57 @@ functions:
     events:
       - http:
           path: push_table/{uid}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+
+  
+  ######################################################
+  #####                                            #####
+  #####       unclaimed buttons table API          #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /unclaimed_buttons
+  # - method: POST request
+  create-unclaimed-buttons:
+    handler: unclaimed_buttons_API/create.main
+    events:
+      - http:
+          path: unclaimed_buttons
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get-unclaimed-buttons:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is unclaimed_buttons/{btn_id}
+    # - method: GET request
+    handler: unclaimed_buttons_API/get.main
+    events:
+      - http:
+          path: unclaimed_buttons/{btn_id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  get-all-unclaimed-buttons:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is unclaimed_buttons
+    # - method: GET request
+    handler: unclaimed_buttons_API/get-all.main
+    events:
+      - http:
+          path: unclaimed_buttons
+          method: get
+          cors: true
+          authorizer: aws_iam
+  delete-unclaimed-buttons:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is unclaimed_buttons/{btn_id}
+    # - method: DELETE request
+    handler: unclaimed_buttons_API/delete.main
+    events:
+      - http:
+          path: unclaimed_buttons/{btn_id}
           method: delete
           cors: true
           authorizer: aws_iam

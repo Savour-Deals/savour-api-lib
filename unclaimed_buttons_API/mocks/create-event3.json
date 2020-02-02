@@ -1,0 +1,8 @@
+{
+  "body": "{\"button_id\":\"564738\"}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "pathParameters": {
+    "btn_id": "098765"
+  },
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}
