@@ -1,12 +1,10 @@
 import * as dynamoDbLib from "../libs/dynamodb-lib";
 
-const unsubStrings = ["stop", "cancel", "end", "quit", "stopall", "unsubscribe"];
+const unsubStrings = ["stop", "cancel", "end", "quit", "stopall", "unsubscribe", "unsub"];
 const subStrings = ['start', 'unstop', 'subscribe','sub'];
 
 async function updateSubscription(uNum, bInfo, subscribe){
   const timestamp = new Date().toISOString();
-  console.log(bInfo);
-  console.log(uNum);
   var bParams = {
     TableName: process.env.businessesTbl,
     // 'Key' defines the partition key and sort key of the item to be retrieved
@@ -17,7 +15,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
         '#FIELD': uNum,
     },
     ExpressionAttributeValues: {
-        ':value': {subscribed: subscribe, timestamp:timestamp}
+        ':value': {subscribed: subscribe, timestamp: timestamp}
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -74,6 +72,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
 }
 
 async function unsubscribeUser(uNum, bNum){
+  console.log(`Unsubscribing ${uNum} from ${bNum}`);
   const bParams = {
     TableName: process.env.businessesTbl,
     // 'Key' defines the partition key and sort key of the item to be retrieved
@@ -87,12 +86,13 @@ async function unsubscribeUser(uNum, bNum){
   var businessInfo = await dynamoDbLib.call("query", bParams);
   if (businessInfo.Items.length > 0) {
     // business exists, continue
-    updateSubscription(uNum,businessInfo.Items[0], false);
+    await updateSubscription(uNum, businessInfo.Items[0], false);
   }
   //if the business does not exist then don't worry?
 }
 
 async function subscribeUser(uNum, bNum){
+  console.log(`Subscribing ${uNum} to ${bNum}`);
   var message = '';
   const bParams = {
     TableName: process.env.businessesTbl,
@@ -125,7 +125,7 @@ async function subscribeUser(uNum, bNum){
       if(businessInfo.place_id in Object.keys(subDict)){
         message = `You're already subscribed to our ${businessInfo.business_name} loyalty program! \u{1f923} Reply HELP for help or STOP to unsubscribe. Msg and Data Rates May Apply.`;
       }else{
-        updateSubscription(uNum, businessInfo, true);
+        await updateSubscription(uNum, businessInfo, true);
         message = `Welcome back to our ${businessInfo.business_name} loyalty program! \u{1f64c} Reply HELP for help or STOP to unsubscribe. Msg and Data Rates May Apply.`;
       }
     }else{
@@ -138,26 +138,25 @@ async function subscribeUser(uNum, bNum){
         }
       };
       await dynamoDbLib.call("put", params);
-      updateSubscription(uNum, businessInfo, true);
+      await updateSubscription(uNum, businessInfo, true);
       message = `Welcome to our ${businessInfo.business_name} loyalty program! \u{1f604} Show us this text today and get ${businessInfo.onboard_deal}!`;
-
     }
   } else {
     // This is probably not likely? IDK
-    message = 'Sorry, that number is not associated with any of our Savour Loyalty Programs. \u{1F62C}';
+    message = 'Sorry, this number is not associated with any of our Savour Loyalty Programs. \u{1F62C}';
   }
   return message;
 }
 
 export async function main(event, context) {
-  // console.log(event);
-  let bNum = event.To;
-  let uNum = event.From;
+  console.log(event);
+  let bNum = event.To.replace("%2B", "+");
+  let uNum = event.From.replace("%2B", "+");
   let eventMsg = event.Body;
   var resp = '';
   var respBody = '';
   if (unsubStrings.includes(eventMsg.toLowerCase())){
-    unsubscribeUser(uNum,bNum);
+    await unsubscribeUser(uNum,bNum);
     return resp;
   }
   else if (subStrings.includes(eventMsg.toLowerCase())){

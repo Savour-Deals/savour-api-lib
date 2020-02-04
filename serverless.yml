@@ -315,4 +315,4 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
-          authorizer: aws_iam
+          authorizer: none
