@@ -29,7 +29,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
         '#FIELD':  bInfo.place_id,
     },
     ExpressionAttributeValues: {
-      ':value': {subscribed: subscribe, timestamp:timestamp}
+      ':value': {subscribed: subscribe, timestamp: timestamp}
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -37,7 +37,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
     await dynamoDbLib.call("update", bParams);
   } catch (error) {
     var dict = {};
-    dict[uNum] = {subscribed: subscribe, timestamp:timestamp};
+    dict[uNum] = {subscribed: subscribe, timestamp: timestamp};
     const bParams = {
       TableName: process.env.businessesTbl,
       // 'Key' defines the partition key and sort key of the item to be retrieved

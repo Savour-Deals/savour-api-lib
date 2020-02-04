@@ -19,6 +19,7 @@
     "serverless-offline": "^5.3.3"
   },
   "dependencies": {
+    "twilio": "^3.39.3",
     "uuid": "^3.3.3"
   }
 }
