@@ -21,15 +21,12 @@ provider:
   # commit your .env.
   #
   environment:
-    businessesTbl: businesses
-    businesUsersTbl: business_users
-    subscriberUsersTbl: subscriber_users
-    pushTbl: push_table
-    unclaimedButtonTbl: unclaimed_buttons
-    accountSid: AC4172af55bfe3e0df897659ae3b51e59b
-    authToken: 2d407c882383aaef4ef289c0560fa162
-    redirectTbl: redirect_urls
-    tokenSize: 6
+    businessesTbl: ${env:businessesTbl}
+    businessUsersTbl: ${env:businessUsersTbl}
+    subscriberUsersTbl: ${env:subscriberUsersTbl}
+    pushTbl: ${env:pushTbl}
+    unclaimedButtonTbl: ${env:unclaimedButtonTbl}
+    redirectTbl: ${env:redirectTbl}
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
   iamRoleStatements:
@@ -42,8 +39,8 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-1:*:*"
-
+        - lambda:InvokeFunction
+      Resource: "*"
 functions:
   # Defines an HTTP API endpoint that calls the main function in create.js
   # - path: url path is /business
@@ -318,6 +315,14 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
-  message-send:
-    handler: message_service_API/message-send.main
-  
+  button-service: 
+    handler: message_service_API/button-service.main
+    environment: 
+      uuidSize: ${env:uuidSize}
+      accountSid: ${env:accountSid}
+      authToken: ${env:authToken}
+    events:
+      - http:
+          path: message_service/butto-service
+          method: post
+          cors: true

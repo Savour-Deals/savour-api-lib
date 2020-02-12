@@ -83,10 +83,10 @@ async function unsubscribeUser(uNum, bNum){
       ":t": bNum
     }
   };
-  var businessInfo = await dynamoDbLib.call("query", bParams);
-  if (businessInfo.Items.length > 0) {
+  const result = await dynamoDbLib.call("query", bParams);
+  if (result.Items.length > 0) {
     // business exists, continue
-    await updateSubscription(uNum, businessInfo.Items[0], false);
+    await updateSubscription(uNum, result.Items[0], false);
   }
   //if the business does not exist then don't worry?
 }
