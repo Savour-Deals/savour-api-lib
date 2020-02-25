@@ -35,19 +35,12 @@ $ npm test
 Run a single test
 
 ``` bash
-$ serverless invoke local --function <function name> --path <api name>/mocks/<file name>.json
+$ serverless invoke local --function <function name> --path <api name>/mocks/<file name>.json --stage dev --region us-east-1
 ```
 
 Use Jest to run our tests. You can read more about setting up tests [here](https://facebook.github.io/jest/docs/en/getting-started.html#content).
 
-#### Environment Variables
-
-To add environment variables to the project
-
-1. Rename `env.example` to `.env`.
-2. Add environment variables for your local stage to `.env`.
-3. Uncomment `environment:` block in the `serverless.yml` and reference the environment variable as `${env:MY_ENV_VAR}`. Where `MY_ENV_VAR` is added to your `.env` file.
-4. Make sure to not commit your `.env`.
+--stage <prod or dev>
 
 #### Linting
 

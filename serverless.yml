@@ -8,12 +8,12 @@ package:
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
-  - serverless-dotenv-plugin # Load .env as environment variables
+  # - serverless-dotenv-plugin # Load .env as environment variables
 
 provider:
   name: aws
   runtime: nodejs10.x
-  stage: prod
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
   # To load environment variables externally
   # rename env.example to .env and uncomment
@@ -21,12 +21,12 @@ provider:
   # commit your .env.
   #
   environment:
-    businessesTbl: ${env:businessesTbl}
-    businessUsersTbl: ${env:businessUsersTbl}
-    subscriberUsersTbl: ${env:subscriberUsersTbl}
-    pushTbl: ${env:pushTbl}
-    unclaimedButtonTbl: ${env:unclaimedButtonTbl}
-    redirectTbl: ${env:redirectTbl}
+    businessesTbl: ${file(./env/config.${self:provider.stage}.json):businessesTbl}
+    businessUsersTbl: ${file(./env/config.${self:provider.stage}.json):businessUsersTbl}
+    subscriberUsersTbl: ${file(./env/config.${self:provider.stage}.json):subscriberUsersTbl}
+    pushTbl: ${file(./env/config.${self:provider.stage}.json):pushTbl}
+    unclaimedButtonTbl: ${file(./env/config.${self:provider.stage}.json):unclaimedButtonTbl}
+    redirectTbl: ${file(./env/config.${self:provider.stage}.json):redirectTbl}
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
   iamRoleStatements:
@@ -40,14 +40,9 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - lambda:InvokeFunction
+        - ssm:GetParameter
       Resource: "*"
 functions:
-  # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /business
-  # - method: POST request
-  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
-  #     domain api call
-  # - authorizer: authenticate using the AWS IAM role
 
   ######################################################
   #####                                            #####
@@ -305,7 +300,7 @@ functions:
   #####       message service API                  #####
   #####                                            #####
   ######################################################
-  # Defines an HTTP API endpoint that calls the main function in twilio-hookss.js
+  # Defines an HTTP API endpoint that calls the main function in twilio-hooks.js
   # - path: url path is /message_service/twilio_hooks
   # - method: POST request
   twilio-hooks:
@@ -315,14 +310,73 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
+  # Defines an HTTP API endpoint that calls the main function in button-service.js
+  # - path: url path is /message_service/button-service
+  # - method: POST request
   button-service: 
     handler: message_service_API/button-service.main
     environment: 
-      uuidSize: ${env:uuidSize}
-      accountSid: ${env:accountSid}
-      authToken: ${env:authToken}
+      uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
+      accountSid: ${file(./env/config.${self:provider.stage}.json):accountSid}
+      authToken: ${file(./env/config.${self:provider.stage}.json):authToken}
     events:
       - http:
-          path: message_service/butto-service
+          path: message_service/button-service
           method: post
+          cors: true
+
+  ######################################################
+  #####                                            #####
+  #####       Payment Service API                  #####
+  #####                                            #####
+  ######################################################
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /payments/{place_id}
+  # - method: POST request
+  create-customer:
+    handler: payment_API/create.main
+    environment: 
+      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+      recurringPlanID: ${file(./env/config.${self:provider.stage}.json):recurringPlanID}
+      usagePlanID: ${file(./env/config.${self:provider.stage}.json):usagePlanID}
+    events:
+      - http:
+          path: payments/{place_id}
+          method: post
+          cors: true
+  # Defines an HTTP API endpoint that calls the main function in update-card.js
+  # - path: url path is /payments/card/{place_id}
+  # - method: PUT request
+  update-card:
+    handler: payment_API/update-card.main
+    environment: 
+      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+    events:
+      - http:
+          path: payments/card/{place_id}
+          method: put
+          cors: true
+  # Defines an HTTP API endpoint that calls the main function in update-usage.js
+  # - path: url path is /payments/usage/{place_id}
+  # - method: PUT request
+  update-usage:
+    handler: payment_API/update-usage.main
+    environment: 
+      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+    events:
+      - http:
+          path: payments/usage/{place_id}
+          method: put
+          cors: true
+  # Defines an HTTP API endpoint that calls the main function in cancel-subscription.js
+  # - path: url path is /payments/subscription/{place_id}
+  # - method: DELETE request
+  cancel-subscription:
+    handler: payment_API/cancel-subscription.main
+    environment: 
+      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+    events:
+      - http:
+          path: payments/subscription/{place_id}
+          method: delete
           cors: true
