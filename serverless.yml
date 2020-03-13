@@ -324,6 +324,20 @@ functions:
           path: message_service/button-service
           method: post
           cors: true
+  # Defines an HTTP API endpoint that calls the main function in create-twilio-number.js
+  # - path: url path is /message_service/twilio_number/{place_id}
+  # - method: POST request
+  create-twilio-number:
+    handler: message_service_API/twilio_number.main
+    environment: 
+      uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
+      accountSid: ${file(./env/config.${self:provider.stage}.json):accountSid}
+      authToken: ${file(./env/config.${self:provider.stage}.json):authToken}
+    events:
+      - http:
+          path: message_service/twilio_number/{place_id}
+          method: post
+          cors: true
 
   ######################################################
   #####                                            #####
