@@ -1,11 +1,8 @@
 import * as dynamoDbLib from "../libs/dynamodb-lib";
 import { success, failure } from "../libs/response-lib";
-import * as dynamoDbLib from "../libs/dynamodb-lib";
 const client = require('twilio')(process.env.accountSid, process.env.authToken);
 
 export async function main(event, context) {
-	const data = JSON.parse(event.body);
-
 	//query for phone number in US
 	var twilioNumberResource = await client.availablePhoneNumbers('US')
 		.local
@@ -23,7 +20,7 @@ export async function main(event, context) {
 			//error occured, return error to caller
 			return failure({ status: false, error: err });
 		});
-	
+
 	//provision phone number
 	let twilioNumber = await client.incomingPhoneNumbers
 		.create({phoneNumber: twilioNumberResource.phoneNumber})
@@ -57,7 +54,7 @@ export async function main(event, context) {
 
 	try {
 		await dynamoDbLib.call("update", params);
-		return success({ status: true });
+		return success({ status: true, twilioNumber});
 	} catch (e) {
 		return failure({ status: false });
 	}

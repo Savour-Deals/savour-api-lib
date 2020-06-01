@@ -328,7 +328,7 @@ functions:
   # - path: url path is /message_service/twilio_number/{place_id}
   # - method: POST request
   create-twilio-number:
-    handler: message_service_API/twilio_number.main
+    handler: message_service_API/create-twilio-number.main
     environment: 
       uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
       accountSid: ${file(./env/config.${self:provider.stage}.json):accountSid}
@@ -394,3 +394,8 @@ functions:
           path: payments/subscription/{place_id}
           method: delete
           cors: true
+
+# Create our resources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
