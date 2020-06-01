@@ -20,7 +20,7 @@ export async function main(event, context) {
 			return local[0];
 		}).catch((err) => {
 			//error occured, return error to caller
-			console.log(err)
+			console.log(err);
 			return failure({ status: false, error: err });
 		});
 
