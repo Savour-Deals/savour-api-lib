@@ -4,7 +4,9 @@ const client = require('twilio')(process.env.accountSid, process.env.authToken);
 
 export async function main(event, context) {
 	//query for phone number in US
-	var twilioNumberResource = await client.availablePhoneNumbers('US')
+	var twilioNumberResource = null;
+	try {
+		twilioNumberResource = await client.availablePhoneNumbers('US')
 		.local
 		.list({
 			// nearLatLong: '37.840699, -122.461853',
@@ -20,6 +22,11 @@ export async function main(event, context) {
 			//error occured, return error to caller
 			return failure({ status: false, error: err });
 		});
+
+	} catch (error) {
+		console.log(error);
+		return failure({status: false, error: err});
+	}
 
 	//provision phone number
 	let twilioNumber = await client.incomingPhoneNumbers
