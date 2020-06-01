@@ -20,12 +20,13 @@ export async function main(event, context) {
 			return local[0];
 		}).catch((err) => {
 			//error occured, return error to caller
+			console.log(err)
 			return failure({ status: false, error: err });
 		});
 
 	} catch (error) {
 		console.log(error);
-		return failure({status: false, error: err});
+		return failure({status: false, error});
 	}
 
 	//provision phone number
@@ -36,6 +37,7 @@ export async function main(event, context) {
 		})
 		.catch((err) => {
 			//error occured, return error to caller
+			console.log(err);
 			return failure({ status: false, error: err });
 		});
 
