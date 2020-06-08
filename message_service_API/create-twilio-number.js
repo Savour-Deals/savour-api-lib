@@ -4,6 +4,12 @@ const client = require('twilio')(process.env.accountSid, process.env.authToken);
 
 export async function main(event, context) {
 	//query for phone number in US
+	const data = event.body;
+
+	if (data.isDev) {
+		return success({ status: true, twilioNumber: "+123456789"});
+	}
+
 	var twilioNumberResource = null;
 	try {
 		twilioNumberResource = await client.availablePhoneNumbers('US')
