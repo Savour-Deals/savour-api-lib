@@ -3,14 +3,22 @@ import { success, failure } from "../libs/response-lib";
 
 export async function main(event, context) {
 	const data = JSON.parse(event.body);
+
 	if (Object.keys(data).length > 0){
 		var updateExp = 'SET ';
 		var expAttVals = {};
 
 		//grab data to update
 		Object.entries(data).forEach(([key, value]) => {
-			updateExp  = updateExp + ' '+ key + ' = :' + key + ',';
-			expAttVals[':' +key] = value;
+			if (key === "businesses") {
+				updateExp  = updateExp + ' ' + key + ' = list_append(' + key + ', :i),';
+				expAttVals[':i'] = [value];
+			} else {
+				updateExp  = updateExp + ' ' + key + ' = :' + key + ',';
+				expAttVals[':' +key] = value;
+			}
+			console.log(updateExp);
+			console.log(expAttVals);
 		});
 		//Remove trailing ,
 		updateExp = updateExp.substring(0, updateExp.length - 1);
@@ -35,6 +43,7 @@ export async function main(event, context) {
 			await dynamoDbLib.call("update", params);
 			return success({ status: true });
 		} catch (e) {
+			console.log(e);
 			return failure({ status: false });
 		}
 	}else{
