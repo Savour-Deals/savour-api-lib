@@ -310,6 +310,13 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
+  send-message:
+    handler: message_service_API/send-message.main
+    events:
+      - http:
+          path: message_service/send_message
+          method: post
+          cors: true
   # Defines an HTTP API endpoint that calls the main function in button-service.js
   # - path: url path is /message_service/button-service
   # - method: POST request
@@ -398,4 +405,4 @@ functions:
 # Create our resources with separate CloudFormation templates
 resources:
   # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}
+  - ${file(resources/api-gateway-errors.yml)} 
