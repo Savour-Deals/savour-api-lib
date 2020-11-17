@@ -1,5 +1,6 @@
-// const client = require('twilio')(process.env.accountSid, process.env.authToken);
+const client = require('twilio')(process.env.accountSid, process.env.authToken);
 const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+import * as dynamoDbLib from "../libs/dynamodb-lib";
 
 function randomString(length) {
 	var result = '';
@@ -64,11 +65,9 @@ async function sendMessage(mobileNumber, content, twilioNumber){
 		to: mobileNumber,
 	};
 	client.messages.create(twilioData);
-	
 }
 
 export async function main(event, context) {
   console.log(event);
-
-	return;
+	return event;
 }
