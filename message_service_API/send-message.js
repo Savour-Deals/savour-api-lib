@@ -69,5 +69,11 @@ async function sendMessage(mobileNumber, content, twilioNumber){
 
 export async function main(event, context) {
   console.log(event);
+  const dealInfo = event.body.dealInfo;
+  const vendorName = event.body.vendorName;
+  const twilioNumber = event.body.twilioNumber;
+  const subscribers = event.body.subscribers;
+
+  for (const mobileNumber in subscribers) subscribers[mobileNumber].subscribed ? sendMessage(mobileNumber, vendorName, twilioNumber) : null;
 	return event;
 }
