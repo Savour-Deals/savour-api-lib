@@ -18,7 +18,7 @@
     "serverless-dotenv-plugin": "^2.4.2",
     "serverless-offline": "^5.12.1"
   },
-  "dependencies": {
+  "dependencies": { 
     "serverless": "^1.71.3",
     "stripe": "^8.53.0",
     "twilio": "^3.43.1",

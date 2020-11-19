@@ -30,10 +30,10 @@ export async function main(event, context) {
 			// can inspect 'result' below to see how it works with different settings
 			ReturnValues: "ALL_NEW"
 		};
-
+		console.log(params);
 		try {
 			await dynamoDbLib.call("update", params);
-			return success({ status: true });
+			return success({ status: true, updateExpression: updateExp, updateObject: params });
 		} catch (e) {
 			return failure({ status: false });
 		}

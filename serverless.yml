@@ -310,6 +310,13 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
+  send-message:
+    handler: message_service_API/send-message.main
+    events:
+      - http:
+          path: message_service/send_message
+          method: post
+          cors: true
   # Defines an HTTP API endpoint that calls the main function in button-service.js
   # - path: url path is /message_service/button-service
   # - method: POST request
@@ -350,7 +357,7 @@ functions:
   create-customer:
     handler: payment_API/create.main
     environment: 
-      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+      stripeKey: ${ssm:stripe-key-dev~true}
       recurringPlanID: ${file(./env/config.${self:provider.stage}.json):recurringPlanID}
       usagePlanID: ${file(./env/config.${self:provider.stage}.json):usagePlanID}
     events:
@@ -364,7 +371,7 @@ functions:
   update-card:
     handler: payment_API/update-card.main
     environment: 
-      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+      stripeKey: ${ssm:stripe-key-dev~true}
     events:
       - http:
           path: payments/card/{place_id}
@@ -376,7 +383,7 @@ functions:
   update-usage:
     handler: payment_API/update-usage.main
     environment: 
-      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+      stripeKey: ${ssm:stripe-key-dev~true}
     events:
       - http:
           path: payments/usage/{place_id}
@@ -388,7 +395,7 @@ functions:
   cancel-subscription:
     handler: payment_API/cancel-subscription.main
     environment: 
-      stripeKey: ${file(./env/config.${self:provider.stage}.json):stripeKey}
+      stripeKey: ${ssm:stripe-key-dev~true}
     events:
       - http:
           path: payments/subscription/{place_id}
@@ -398,4 +405,4 @@ functions:
 # Create our resources with separate CloudFormation templates
 resources:
   # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}
+  - ${file(resources/api-gateway-errors.yml)} 

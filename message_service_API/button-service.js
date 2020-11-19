@@ -66,11 +66,11 @@ async function createPushTableLog(buttonID, timestamp, clickType){
 function getDealString(clickType, businessData){
 	//TODO: Case for message passed from business dashboard
 	var content = ``;
-	if (clickType == "SINGLE"){
+	if (clickType === "SINGLE"){
 		content = `${businessData.single_click_deal}`;
-	}else if (clickType == "DOUBLE"){
+	}else if (clickType === "DOUBLE"){
 		content = `${businessData.double_click_deal}`;
-	}else if (clickType == "LONG"){
+	}else if (clickType === "LONG"){
 		content = `${businessData.long_click_deal}`;
 	}
 	//else unknown click type
@@ -167,11 +167,11 @@ export async function main(event, context) {
 		if (result.Items.length > 0) {
 			//This button is registered. Continue!
 			const uuid = await createPushTableLog(buttonID, timestamp, clickType);
-			if (uuid != "") {
+			if (uuid !== "") {
 				//we created the push event successfully!
 				const businessData = result.Items[0];
 				const content = getDealString(clickType, businessData);
-				if (content != "") {
+				if (content !== "") {
 					const message = `${businessData.business_name}: Check it out! You just got a coupon for ${content}! \u{1f354}\u{1f354}\u{1f60b}`;
 					var sentCount = 0;
 					for (var mobileNumber in businessData.subscriber_dict) {

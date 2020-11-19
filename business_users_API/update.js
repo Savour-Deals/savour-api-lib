@@ -11,8 +11,9 @@ export async function main(event, context) {
 		//grab data to update
 		Object.entries(data).forEach(([key, value]) => {
 			if (key === "businesses") {
-				updateExp  = updateExp + ' ' + key + ' = list_append(' + key + ', :i),';
-				expAttVals[':i'] = [value];
+				// updateExp  = updateExp + ' ' + key + ' = list_append(' + key + ', :i),';
+				updateExp = `${updateExp} ${key} = list_append(${key}, :${key}),`;
+				expAttVals[`:${key}`] = [value];
 			} else {
 				updateExp  = updateExp + ' ' + key + ' = :' + key + ',';
 				expAttVals[':' +key] = value;
