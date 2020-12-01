@@ -357,7 +357,7 @@ functions:
   create-customer:
     handler: payment_API/create.main
     environment: 
-      stripeKey: ${ssm:stripe-key-dev~true}
+      stripeKey: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/stripeSecretKey/*'
       recurringPlanID: ${file(./env/config.${self:provider.stage}.json):recurringPlanID}
       usagePlanID: ${file(./env/config.${self:provider.stage}.json):usagePlanID}
     events:
@@ -371,7 +371,7 @@ functions:
   update-card:
     handler: payment_API/update-card.main
     environment: 
-      stripeKey: ${ssm:stripe-key-dev~true}
+      stripeKey: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/stripeSecretKey/*'
     events:
       - http:
           path: payments/card/{place_id}
@@ -383,7 +383,7 @@ functions:
   update-usage:
     handler: payment_API/update-usage.main
     environment: 
-      stripeKey: ${ssm:stripe-key-dev~true}
+      stripeKey: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/stripeSecretKey/*'
     events:
       - http:
           path: payments/usage/{place_id}
@@ -395,7 +395,7 @@ functions:
   cancel-subscription:
     handler: payment_API/cancel-subscription.main
     environment: 
-      stripeKey: ${ssm:stripe-key-dev~true}
+      stripeKey: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/stripeSecretKey/*'
     events:
       - http:
           path: payments/subscription/{place_id}
