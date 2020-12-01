@@ -1,5 +1,6 @@
-// const client = require('twilio')(process.env.accountSid, process.env.authToken);
+const client = require('twilio')(process.env.accountSid, process.env.authToken);
 const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+import * as dynamoDbLib from "../libs/dynamodb-lib";
 
 function randomString(length) {
 	var result = '';
@@ -64,11 +65,14 @@ async function sendMessage(mobileNumber, content, twilioNumber){
 		to: mobileNumber,
 	};
 	client.messages.create(twilioData);
-	
 }
 
 export async function main(event, context) {
   console.log(event);
+  const dealInfo = event.body.dealInfo;
+  const twilioNumber = event.body.twilioNumber;
+  const subscribers = event.body.subscribers;
 
-	return;
+  for (const mobileNumber in subscribers) subscribers[mobileNumber].subscribed ? sendMessage(mobileNumber, dealInfo, twilioNumber) : null;
+	return event;
 }
