@@ -87,13 +87,13 @@ async function sendMessage(mobileNumber, content, twilioNumber, uuid, timestamp)
 		let messageLink = `Redeem here: ${shortUrl}.`;
 		messageBody = `${content} ${messageLink} HELP 4 help, STOP 2 Unsub.`;
 	}else{
-		//we couldnt generate a link, send just the message instead. Also alert dev
+		//we couldnt generate a link, send just the message instead.
 		console.log("Failed to get token for this message");
-		client.messages.create({
-			body: `MESSAGE-SEND::Failed to get a token for short url`,
-			from: "+17633249713",
-			to: "+16124812069"
-		});
+		// client.messages.create({
+		// 	body: `MESSAGE-SEND::Failed to get a token for short url`,
+		// 	from: "+17633249713",
+		// 	to: "+16124812069"
+		// });
 		messageBody = `${content} HELP 4 help, STOP 2 Unsub.`;
 	}
 
@@ -186,13 +186,13 @@ export async function main(event, context) {
 					console.log(`MESSAGE-SERVICE::LAMBDA_HANDLER : Unknown message origin!`);
 				}
 			}else{
-				// something went wrong setting up event. Alert dev!
+				// something went wrong setting up event.
 				console.log("Failed to generate uuid for push event");
-				client.messages.create({
-					body: `MESSAGE-SEND::Failed to generate uuid for push event`,
-					from: "+17633249713",
-					to: "+16124812069"
-				});
+				// client.messages.create({
+				// 	body: `MESSAGE-SEND::Failed to generate uuid for push event`,
+				// 	from: "+17633249713",
+				// 	to: "+16124812069"
+				// });
 			}
     } else {
 			//button was not registered to anyone. Put it in unclaimed table

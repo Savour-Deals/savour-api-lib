@@ -310,6 +310,19 @@ functions:
           path: message_service/twilio_hooks
           method: post
           cors: true
+          integration: lambda
+          request:
+            passThrough: WHEN_NO_TEMPLATES
+            template:
+              application/x-www-form-urlencoded: ${file(message_service_API/twilio-request.vtl)}
+          response:
+            statusCodes:
+              200:
+                headers:
+                  Content-Type: "'application/xml'"
+                pattern: ""
+                template:
+                  application/xml: ${file(message_service_API/twilio-response.vtl)}
   send-message:
     handler: message_service_API/send-message.main
     events:
@@ -324,8 +337,8 @@ functions:
     handler: message_service_API/button-service.main
     environment: 
       uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
-      accountSid: ${file(./env/config.${self:provider.stage}.json):accountSid}
-      authToken: ${file(./env/config.${self:provider.stage}.json):authToken}
+      accountSid: ${ssm:/twilio/accountSid~true}
+      authToken: ${ssm:/twilio/authToken~true}
     events:
       - http:
           path: message_service/button-service
@@ -338,8 +351,9 @@ functions:
     handler: message_service_API/create-twilio-number.main
     environment: 
       uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
-      accountSid: ${file(./env/config.${self:provider.stage}.json):accountSid}
-      authToken: ${file(./env/config.${self:provider.stage}.json):authToken}
+      accountSid: ${ssm:/twilio/accountSid~true}
+      authToken: ${ssm:/twilio/authToken~true}
+      twilioWebhookUrl: ${ssm:/twilio/webhook/${self:provider.stage}~true}
     events:
       - http:
           path: message_service/twilio_number/{place_id}
@@ -357,7 +371,7 @@ functions:
   create-customer:
     handler: payment_API/create.main
     environment: 
-      stripeKey: 'arn:aws:ssm:us-east-1:AKIA5VFCWP5RWLZOE6WAparameter/stripeSecretKey/*'
+      stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
       recurringPlanID: ${file(./env/config.${self:provider.stage}.json):recurringPlanID}
       usagePlanID: ${file(./env/config.${self:provider.stage}.json):usagePlanID}
     events:
@@ -371,7 +385,7 @@ functions:
   update-card:
     handler: payment_API/update-card.main
     environment: 
-      stripeKey: 'arn:aws:ssm:us-east-1:AKIA5VFCWP5RWLZOE6WAparameter/stripeSecretKey/*'
+      stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
       - http:
           path: payments/card/{place_id}
@@ -383,7 +397,7 @@ functions:
   update-usage:
     handler: payment_API/update-usage.main
     environment: 
-      stripeKey: 'arn:aws:ssm:us-east-1:AKIA5VFCWP5RWLZOE6WAparameter/stripeSecretKey/*'
+      stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
       - http:
           path: payments/usage/{place_id}
@@ -395,7 +409,7 @@ functions:
   cancel-subscription:
     handler: payment_API/cancel-subscription.main
     environment: 
-      stripeKey: 'arn:aws:ssm:us-east-1:AKIA5VFCWP5RWLZOE6WAparameter/stripeSecretKey/*'
+      stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
       - http:
           path: payments/subscription/{place_id}

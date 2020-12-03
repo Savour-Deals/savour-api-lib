@@ -48,13 +48,13 @@ async function sendMessage(mobileNumber, content, twilioNumber){
 		messageBody = `${content} ${messageLink} HELP 4, STOP 2 Unsub.`;
 
 	} else{
-		//we couldnt generate a link, send just the message instead. Also alert dev
+		//we couldnt generate a link, send just the message instead.
 		console.log("Failed to get token for this message");
-		client.messages.create({
-			body: `MESSAGE-SEND::Failed to get a token for short url`,
-			from: "+17633249713",
-			to: "+16124812069"
-		});
+		// client.messages.create({
+		// 	body: `MESSAGE-SEND::Failed to get a token for short url`,
+		// 	from: "+17633249713",
+		// 	to: "+16124812069"
+		// });
 		messageBody = `${content} HELP 4 help, STOP 2 Unsub.`;
 		return;
 	}
