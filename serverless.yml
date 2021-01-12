@@ -1,12 +1,10 @@
-# NOTE: update this with your service name
-service: savour-button-api
+service: savour-text-service-api
 
-# Create an optimized package for our functions 
 package:
   individually: true
 
 plugins:
-  - serverless-bundle # Package our functions with Webpack
+  - serverless-bundle 
   - serverless-offline
   # - serverless-dotenv-plugin # Load .env as environment variables
 
@@ -53,7 +51,7 @@ functions:
   # - path: url path is /businesses
   # - method: POST request
   create-business:
-    handler: businesses_API/create.main
+    handler: src/businesses/index.create
     events:
       - http:
           path: businesses
@@ -64,7 +62,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is /businesses/{id}
     # - method: GET request
-    handler: businesses_API/get.main
+    handler: src/businesses/index.get
     events:
       - http:
           path: businesses/{place_id}
@@ -75,7 +73,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in update.js
     # - path: url path is /businesses/{place_id}
     # - method: PUT request
-    handler: businesses_API/update.main
+    handler: src/businesses/index.update
     events:
       - http:
           path: businesses/{place_id}
@@ -86,7 +84,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in delete.js
     # - path: url path is /businesses/{place_id}
     # - method: DELETE request
-    handler: businesses_API/delete.main
+    handler: src/businesses/index.del
     events:
       - http:
           path: businesses/{place_id}
@@ -103,7 +101,7 @@ functions:
   # - path: url path is /business_users
   # - method: POST request
   create-business-user:
-    handler: business_users_API/create.main
+    handler: src/business_users/index.create
     events:
       - http:
           path: business_users
@@ -114,7 +112,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is business_users/{uid}
     # - method: GET request
-    handler: business_users_API/get.main
+    handler: src/business_users/index.get
     events:
       - http:
           path: business_users/{uid}
@@ -125,7 +123,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in update.js
     # - path: url path is business_users/{uid}
     # - method: PUT request
-    handler: business_users_API/update.main
+    handler: src/business_users/index.update
     events:
       - http:
           path: business_users/{uid}
@@ -136,7 +134,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in delete.js
     # - path: url path is business_users/{uid}
     # - method: DELETE request
-    handler: business_users_API/delete.main
+    handler: src/business_users/index.del
     events:
       - http:
           path: business_users/{uid}
@@ -153,7 +151,7 @@ functions:
   # - path: url path is /subscriber_users
   # - method: POST request
   create-subscriber-user:
-    handler: subscriber_users_API/create.main
+    handler: src/subscriber_users/index.create
     events:
       - http:
           path: subscriber_users
@@ -164,7 +162,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is subscriber_users/{mobile_number}
     # - method: GET request
-    handler: subscriber_users_API/get.main
+    handler: src/subscriber_users/index.get
     events:
       - http:
           path: subscriber_users/{mobile_number}
@@ -175,7 +173,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in update.js
     # - path: url path is subscriber_users/{mobile_number}
     # - method: PUT request
-    handler: subscriber_users_API/update.main
+    handler: src/subscriber_users/index.update
     events:
       - http:
           path: subscriber_users/{mobile_number}
@@ -186,7 +184,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in delete.js
     # - path: url path is subscriber_users/{mobile_number}
     # - method: DELETE request
-    handler: subscriber_users_API/delete.main
+    handler: src/subscriber_users/index.del
     events:
       - http:
           path: subscriber_users/{mobile_number}
@@ -203,7 +201,7 @@ functions:
   # - path: url path is /push_table
   # - method: POST request
   create-push-table:
-    handler: push_table_API/create.main
+    handler: src/push_table/index.create
     events:
       - http:
           path: push_table
@@ -214,7 +212,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in get.js
     # - path: url path is push_table/{uid}
     # - method: GET request
-    handler: push_table_API/get.main
+    handler: src/push_table/index.get
     events:
       - http:
           path: push_table/g/{uid}
@@ -225,7 +223,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in update.js
     # - path: url path is push_table/{btn_id}
     # - method: GET request
-    handler: push_table_API/get-all.main
+    handler: src/push_table/index.getAll
     events:
       - http:
           path: push_table/q/{btn_id}
@@ -236,61 +234,10 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in delete.js
     # - path: url path is push_table/{uid}
     # - method: DELETE request
-    handler: push_table_API/delete.main
+    handler: src/push_table/index.del
     events:
       - http:
           path: push_table/{uid}
-          method: delete
-          cors: true
-          authorizer: aws_iam
-
-  
-  ######################################################
-  #####                                            #####
-  #####       unclaimed buttons table API          #####
-  #####                                            #####
-  ######################################################
-  # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /unclaimed_buttons
-  # - method: POST request
-  create-unclaimed-buttons:
-    handler: unclaimed_buttons_API/create.main
-    events:
-      - http:
-          path: unclaimed_buttons
-          method: post
-          cors: true
-          authorizer: aws_iam
-  get-unclaimed-buttons:
-    # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is unclaimed_buttons/{btn_id}
-    # - method: GET request
-    handler: unclaimed_buttons_API/get.main
-    events:
-      - http:
-          path: unclaimed_buttons/{btn_id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  get-all-unclaimed-buttons:
-    # Defines an HTTP API endpoint that calls the main function in update.js
-    # - path: url path is unclaimed_buttons
-    # - method: GET request
-    handler: unclaimed_buttons_API/get-all.main
-    events:
-      - http:
-          path: unclaimed_buttons
-          method: get
-          cors: true
-          authorizer: aws_iam
-  delete-unclaimed-buttons:
-    # Defines an HTTP API endpoint that calls the main function in delete.js
-    # - path: url path is unclaimed_buttons/{btn_id}
-    # - method: DELETE request
-    handler: unclaimed_buttons_API/delete.main
-    events:
-      - http:
-          path: unclaimed_buttons/{btn_id}
           method: delete
           cors: true
           authorizer: aws_iam
@@ -304,7 +251,7 @@ functions:
   # - path: url path is /message_service/twilio_hooks
   # - method: POST request
   twilio-hooks:
-    handler: message_service_API/twilio-hooks.main
+    handler: src/message_service/index.hooks
     events:
       - http:
           path: message_service/twilio_hooks
@@ -314,7 +261,7 @@ functions:
           request:
             passThrough: WHEN_NO_TEMPLATES
             template:
-              application/x-www-form-urlencoded: ${file(message_service_API/twilio-request.vtl)}
+              application/x-www-form-urlencoded: ${file(message_service/twilio-request.vtl)}
           response:
             statusCodes:
               200:
@@ -322,9 +269,9 @@ functions:
                   Content-Type: "'application/xml'"
                 pattern: ""
                 template:
-                  application/xml: ${file(message_service_API/twilio-response.vtl)}
+                  application/xml: ${file(message_service/twilio-response.vtl)}
   send-message:
-    handler: message_service_API/send-message.main
+    handler: src/message_service/index.sendMessage
     events:
       - http:
           path: message_service/send_message
@@ -334,7 +281,7 @@ functions:
   # - path: url path is /message_service/button-service
   # - method: POST request
   button-service: 
-    handler: message_service_API/button-service.main
+    handler: src/message_service/index.buttonService
     environment: 
       uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
       accountSid: ${ssm:/twilio/accountSid~true}
@@ -348,7 +295,7 @@ functions:
   # - path: url path is /message_service/twilio_number/{place_id}
   # - method: POST request
   create-twilio-number:
-    handler: message_service_API/create-twilio-number.main
+    handler: src/message_service/index.createNumber
     environment: 
       uuidSize: ${file(./env/config.${self:provider.stage}.json):uuidSize}
       accountSid: ${ssm:/twilio/accountSid~true}
@@ -369,7 +316,7 @@ functions:
   # - path: url path is /payments/{place_id}
   # - method: POST request
   create-customer:
-    handler: payment_API/create.main
+    handler: src/payment/index.cancelSubscription
     environment: 
       stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
       recurringPlanID: ${file(./env/config.${self:provider.stage}.json):recurringPlanID}
@@ -383,7 +330,7 @@ functions:
   # - path: url path is /payments/card/{place_id}
   # - method: PUT request
   update-card:
-    handler: payment_API/update-card.main
+    handler: src/payment/index.updateCard
     environment: 
       stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
@@ -395,7 +342,7 @@ functions:
   # - path: url path is /payments/usage/{place_id}
   # - method: PUT request
   update-usage:
-    handler: payment_API/update-usage.main
+    handler: src/payment/index.updateUsage
     environment: 
       stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
@@ -407,7 +354,7 @@ functions:
   # - path: url path is /payments/subscription/{place_id}
   # - method: DELETE request
   cancel-subscription:
-    handler: payment_API/cancel-subscription.main
+    handler: src/payment/index.cancelSubscription
     environment: 
       stripeKey: ${ssm:/stripeSecretKey/${self:provider.stage}~true}
     events:
