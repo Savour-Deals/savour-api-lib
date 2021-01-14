@@ -8,4 +8,4 @@ export {
 	get,
 	del,
 	create,
-}
+};
