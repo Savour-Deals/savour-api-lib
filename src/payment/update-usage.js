@@ -1,5 +1,5 @@
 var stripe = require('stripe')(process.env.stripeKey);
-import { success, failure } from "../common/response-lib";
+import { success, failure } from "../../common/response-lib";
 
 export default async function main(event, context) {
 	const data = JSON.parse(event.body);

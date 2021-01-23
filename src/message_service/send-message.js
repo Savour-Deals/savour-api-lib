@@ -1,5 +1,5 @@
 const client = require('twilio')(process.env.accountSid, process.env.authToken);
-import { shortenUrl } from '../url_shortener/index.js';
+import { shortenUrl } from '../url_shortener/shorten.js';
 
 export default async function main(event, context) {
   console.log(event);

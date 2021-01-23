@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../common/dynamodb-lib";
-import { success, failure } from "../common/response-lib";
+import * as dynamoDbLib from "../../common/dynamodb-lib";
+import { success, failure } from "../../common/response-lib";
 const client = require('twilio')(process.env.accountSid, process.env.authToken);
 
 export default async function main(event, context) {

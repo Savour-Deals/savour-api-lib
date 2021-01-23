@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../common/dynamodb-lib";
-import { success, failure } from "../common/response-lib";
+import * as dynamoDbLib from "../../common/dynamodb-lib";
+import { success, failure } from "../../common/response-lib";
 
 var stripe = require('stripe')(process.env.stripeKey);
 

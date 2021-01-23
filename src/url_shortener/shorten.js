@@ -1,5 +1,5 @@
 const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-import * as dynamoDbLib from "../common/dynamodb-lib";
+import * as dynamoDbLib from "../../common/dynamodb-lib";
 
 function randomString(length) {
 	var result = '';

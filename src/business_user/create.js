@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../common/dynamodb-lib";
-import { success, failure } from "../common/response-lib";
+import * as dynamoDbLib from "../../common/dynamodb-lib";
+import { success, failure } from "../../common/response-lib";
 
 export default async function main(event, context) {
   console.log(event);
