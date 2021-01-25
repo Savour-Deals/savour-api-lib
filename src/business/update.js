@@ -15,7 +15,7 @@ export default async function main(event, context) {
 		//Remove trailing ,
 		updateExp = updateExp.substring(0, updateExp.length - 1);
 		const params = {
-			TableName: process.env.businessesTbl,
+			TableName: process.env.businessTable,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
 			// - 'place_id': Business ID identifying Google id
 			Key: {

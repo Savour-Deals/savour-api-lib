@@ -6,7 +6,7 @@ export default async function main(event, context) {
   console.log(context);
   const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.businessUsersTbl,
+    TableName: process.env.businessUserTable,
     Item: data
   };
   console.log(params);

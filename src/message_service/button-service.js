@@ -19,7 +19,7 @@ export default async function main(event, context) {
 
 	//see if this button is registered by looking businesses up by btn_id
 	const params = {
-    TableName: process.env.businessesTbl,
+    TableName: process.env.businessTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'btn_id': button id registered to a single business
     IndexName: "btn_id-index",
@@ -64,7 +64,7 @@ export default async function main(event, context) {
     } else {
 			//button was not registered to anyone. Put it in unclaimed table
 			const params = {
-				TableName: process.env.unclaimedButtonTbl,
+				TableName: process.env.unclaimedButtonTable,
 				Item: {button_id: buttonID}
 			};
 			try {
@@ -88,7 +88,7 @@ async function createPushTableLog(buttonID, timestamp, clickType){
 		uuid = randomString(parseInt(process.env.uuidSize));
 		try {
 			const params = {
-				TableName: process.env.pushTbl,
+				TableName: process.env.pushMessageTable,
 				Item: {
 					unique_id: uuid,
 					button_id: buttonID,
@@ -149,7 +149,7 @@ async function sendMessage(mobileNumber, content, twilioNumber, uuid, timestamp)
 	client.messages.create(twilioData);
 
 	var params = {
-		TableName: process.env.pushTbl,
+		TableName: process.env.pushMessageTable,
 		Key: {'unique_id': uuid},
 		UpdateExpression: 'SET #VALUE.#FIELD = :value',
 		ExpressionAttributeNames: {
@@ -167,7 +167,7 @@ async function sendMessage(mobileNumber, content, twilioNumber, uuid, timestamp)
     var dict = {};
     dict[mobileNumber] = {status: 'SENT', timestamp: timestamp};
     params = {
-      TableName: process.env.pushTbl,
+      TableName: process.env.pushMessageTable,
 			Key: {'unique_id': uuid},
       UpdateExpression: 'SET sent_map = :value',
       ExpressionAttributeValues: {

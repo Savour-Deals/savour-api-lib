@@ -17,7 +17,7 @@ export default async function main(longUrl, shortUrlDomain) {
 		shortUrl = `${shortUrlDomain}/${token}`;
 		try {
 			const params = {
-				TableName: process.env.redirectTbl,
+				TableName: process.env.redirectTable,
 				Item: {
 					unique_id: token,
 					destination_url: longUrl,

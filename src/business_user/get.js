@@ -3,7 +3,7 @@ import { success, failure } from "../../common/response-lib";
 
 export default async function main(event, context) {
   const params = {
-    TableName: process.env.businessUsersTbl,
+    TableName: process.env.businessUserTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'uid': User ID to identify a user by Cognito
     Key: {

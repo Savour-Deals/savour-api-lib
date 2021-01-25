@@ -1,4 +1,4 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
+import * as dynamoDbLib from "../common/dynamodb-lib";
 
 const unsubStrings = ["stop", "cancel", "end", "quit", "stopall", "unsubscribe", "unsub"];
 const subStrings = ['start', 'unstop', 'subscribe','sub'];
@@ -28,7 +28,7 @@ export default async function main(event, context) {
 async function updateSubscription(uNum, bInfo, subscribe){
   const timestamp = new Date().toISOString();
   var bParams = {
-    TableName: process.env.businessesTbl,
+    TableName: process.env.businessTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'place_id': id identifying business
     Key: {place_id: bInfo.place_id},
@@ -42,7 +42,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
     ReturnValues: 'ALL_NEW'
   };
   var uParams = {
-    TableName: process.env.subscriberUsersTbl,
+    TableName: process.env.subscriberUserTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'mobile_number': number identifying user
     Key: {mobile_number: uNum},
@@ -61,7 +61,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
     var dict = {};
     dict[uNum] = {subscribed: subscribe, timestamp: timestamp};
     const bParams = {
-      TableName: process.env.businessesTbl,
+      TableName: process.env.businessTable,
       // 'Key' defines the partition key and sort key of the item to be retrieved
       // - 'place_id': id identifying business
       Key: {place_id: bInfo.place_id},
@@ -79,7 +79,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
     var dict2 = {};
     dict2[bInfo.place_id] = {subscribed: subscribe, timestamp:timestamp};
     const uParams = {
-      TableName: process.env.subscriberUsersTbl,
+      TableName: process.env.subscriberUserTable,
       // 'Key' defines the partition key and sort key of the item to be retrieved
       // - 'mobile_number': number identifying user
       Key: {mobile_number: uNum},
@@ -96,7 +96,7 @@ async function updateSubscription(uNum, bInfo, subscribe){
 async function unsubscribeUser(uNum, bNum){
   console.log(`Unsubscribing ${uNum} from ${bNum}`);
   const bParams = {
-    TableName: process.env.businessesTbl,
+    TableName: process.env.businessTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'twilio_number': number identifying business
     IndexName: "twilio_number-index",
@@ -117,7 +117,7 @@ async function subscribeUser(uNum, bNum){
   console.log(`Subscribing ${uNum} to ${bNum}`);
   var message = '';
   const bParams = {
-    TableName: process.env.businessesTbl,
+    TableName: process.env.businessTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'twilio_number': number identifying business
     IndexName: "twilio_number-index",
@@ -127,7 +127,7 @@ async function subscribeUser(uNum, bNum){
     }
   };
   const uParams = {
-    TableName: process.env.subscriberUsersTbl,
+    TableName: process.env.subscriberUserTable,
     // 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'mobile_number': number identifying user
     key: "mobile_number",
@@ -153,7 +153,7 @@ async function subscribeUser(uNum, bNum){
     }else{
       // subscriber doesn't exist, create user and subscribe them to receive deals from this business
       const params = {
-        TableName: process.env.subscriberUsersTbl,
+        TableName: process.env.subscriberUserTable,
         Item: {
           mobile_number: uNum,
           subscription_dict: {}

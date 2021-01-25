@@ -13,7 +13,7 @@ export default async function main(event, context) {
 	).then(async(_) => {
 		//now delete all corresponding data in AWS
 		const params = {
-			TableName: process.env.businessesTbl,
+			TableName: process.env.businessTable,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
 			// - 'place_id': Business ID identifying Google id
 			Key: {

@@ -17,14 +17,13 @@ provider:
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
   # commit your .env.
-  #
   environment:
-    businessesTbl: !ImportValue '${self:provider.stage}-Businesses-TableName'
-    businessUsersTbl: !ImportValue '${self:provider.stage}-BusinessUsers-TableName'
-    subscriberUsersTbl: !ImportValue '${self:provider.stage}-SubscriberUsers-TableName'
-    pushTbl: !ImportValue '${self:provider.stage}-PushMessage-TableName'
-    unclaimedButtonTbl: !ImportValue '${self:provider.stage}-UnclaimedButton-TableName'
-    redirectTbl: !ImportValue '${self:provider.stage}-Redirect-TableName'
+    businessTable: !ImportValue '${self:provider.stage}-Businesses-TableName'
+    businessUserTable: !ImportValue '${self:provider.stage}-BusinessUsers-TableName'
+    subscriberUserTable: !ImportValue '${self:provider.stage}-SubscriberUsers-TableName'
+    pushMessageTable: !ImportValue '${self:provider.stage}-PushMessage-TableName'
+    # unclaimedButtonTable: !ImportValue '${self:provider.stage}-UnclaimedButton-TableName'
+    redirectTable: !ImportValue '${self:provider.stage}-Redirect-TableName'
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
   iamRoleStatements:

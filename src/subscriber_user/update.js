@@ -15,7 +15,7 @@ export default async function main(event, context) {
 		//Remove trailing ,
 		updateExp = updateExp.substring(0, updateExp.length - 1);
 		const params = {
-			TableName: process.env.subscriberUsersTbl,
+			TableName: process.env.subscriberUserTable,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
     // - 'mobile_number': Mobile number identifying user
 			Key: {

@@ -9,7 +9,7 @@ export default async function main(event, context) {
 	if (data.isDev) {
 			//store new number in DB
 		const params = {
-			TableName: process.env.businessesTbl,
+			TableName: process.env.businessTable,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
 			// - 'place_id': Business ID identifying Google id
 			Key: {
@@ -75,7 +75,7 @@ export default async function main(event, context) {
 
 	//store new number in DB
 	const params = {
-		TableName: process.env.businessesTbl,
+		TableName: process.env.businessTable,
 		// 'Key' defines the partition key and sort key of the item to be retrieved
 		// - 'place_id': Business ID identifying Google id
 		Key: {
