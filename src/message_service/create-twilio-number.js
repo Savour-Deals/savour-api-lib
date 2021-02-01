@@ -1,6 +1,8 @@
 import * as dynamoDbLib from "../../common/dynamodb-lib";
 import { success, failure } from "../../common/response-lib";
 const client = require('twilio')(process.env.authToken, process.env.authToken);
+import SSM from "aws-sdk/clients/ssm";
+const ssm = new SSM();
 
 export default async function main(event, context) {
 	//query for phone number in US
@@ -9,7 +11,6 @@ export default async function main(event, context) {
 
 	const placeId = event.pathParameters.place_id;
 	const stage = process.env.stage;
-	const webhook = process.env.twilioWebhookUrl;
 
 	var number;
 	if (stage == 'dev') {
@@ -38,7 +39,8 @@ export default async function main(event, context) {
 			return failure({status: false, error});
 		}
 
-		const webhook = await ssm.getParameter(`/twilio/webhook/${stage}`).promise();
+		const url = await ssm.getParameter(`/api/execute-url/${scope.stage}`).promise();
+		const webhook = url + process.env.path;
 		//provision phone number
 		number = await client.incomingPhoneNumbers.create({
 			phoneNumber: twilioNumberResource.phoneNumber,
