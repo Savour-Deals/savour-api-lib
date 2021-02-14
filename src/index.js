@@ -49,7 +49,7 @@ export const subscriber = {
 }
 
 export const url = {
-	shorten: urlAPI.shortenUrl,
+	shorten: urlAPI.shorten,
 	redirect: urlAPI.redirect
 }
 
