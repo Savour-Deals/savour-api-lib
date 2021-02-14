@@ -21,7 +21,7 @@ export const businessUser = {
 }
 
 export const message = {
-	button: messageAPI.buttonService,
+	button: messageAPI.button,
 	hooks: messageAPI.hooks,
 	createNumber: messageAPI.createNumber,
 	sendMessage: messageAPI.sendMessage
