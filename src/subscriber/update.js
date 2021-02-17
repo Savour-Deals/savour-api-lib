@@ -2,7 +2,7 @@ import * as dynamoDb from "../common/dynamodb-lib";
 import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+	const data = event.body;
 	if (Object.keys(data).length > 0){
 		var updateExp = 'SET ';
 		var expAttVals = {};
@@ -37,7 +37,8 @@ export default async function main(event, context) {
 		} catch (e) {
 			return failure({ status: false });
 		}
-	}else{
+	}else {
+		console.log(e);
 		//nothing to update. return false
 		return success({ status: false });
 	}

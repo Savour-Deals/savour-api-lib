@@ -4,7 +4,7 @@ import { success, failure } from "../common/response-lib";
 var stripe = require('stripe')(process.env.stripeKey);
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+	const data = event.body;
 	//Attach a new payment method to customer
 	return stripe.paymentMethods.attach(
 		data.payment_method,
@@ -41,10 +41,12 @@ export default async function main(event, context) {
 			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
+			console.log(e);
 			return failure({ status: false, error: e });
 		}
 	})
   .catch((err) => {
+		console.log(err);
 		//error occured, return error to caller
 		return failure({ status: false, error: err });
   });

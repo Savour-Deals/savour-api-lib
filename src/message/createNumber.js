@@ -6,7 +6,7 @@ const ssm = new SSM();
 
 export default async function main(event, context) {
 	//query for phone number in US
-	const data = JSON.parse(event.body);
+	const data = event.body;
 	console.log(data);
 
 	const placeId = event.pathParameters.place_id;
@@ -58,6 +58,7 @@ export default async function main(event, context) {
 	try {
 		persistNumber(placeId, number);
 	} catch(error) {
+		console.log(error);
 		return failure({ status: false });
 	}
 	return success({ status: true, twilioNumber: number});

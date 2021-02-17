@@ -2,7 +2,7 @@ import * as dynamoDb from "../common/dynamodb-lib";
 import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
-  const data = JSON.parse(event.body);
+  const data = event.body;
   const params = {
     TableName: process.env.subscriberUserTable,
     Item: data

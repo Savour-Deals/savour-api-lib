@@ -21,6 +21,7 @@ export default async function main(event, context) {
       return {"content": content}
     }
   } catch (e) {
+    console.log(e);
     content = "<html><body><h1>404: Not Found!</h1></body></html>"
     return {"content": content}
   }

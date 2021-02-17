@@ -4,7 +4,7 @@ import { success, failure } from "../common/response-lib";
 var stripe = require('stripe')(process.env.stripeKey);
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+	const data = event.body;
 
 	//cancel subscription immediately and send prorated invoice.
 	return stripe.subscriptions.del(
@@ -32,9 +32,11 @@ export default async function main(event, context) {
 			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
+			console.log
 			return failure({ status: false });
 		}
 	}).catch((err) => {
+		console.log(err);
 		//error occured, return error to caller
 		return failure({ status: false, error: err });
   });
