@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
   const params = {
@@ -15,7 +15,7 @@ export default async function main(event, context) {
   };
 
   try {
-    const result = await dynamoDbLib.call("query", params);
+    const result = await dynamoDb.call("query", params);
     // Return the matching list of items in response body
     return success(result.Items);
   } catch (e) {

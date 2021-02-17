@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 var stripe = require('stripe')(process.env.stripeKey);
 
@@ -29,7 +29,7 @@ export default async function main(event, context) {
 		};
 
 		try {
-			await dynamoDbLib.call("update", params);
+			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
 			return failure({ status: false });

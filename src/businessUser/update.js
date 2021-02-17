@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
 	const data = JSON.parse(event.body);
@@ -41,7 +41,7 @@ export default async function main(event, context) {
 		};
 
 		try {
-			await dynamoDbLib.call("update", params);
+			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
 			console.log(e);

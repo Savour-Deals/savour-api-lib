@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDbLib from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 const client = require('twilio')(process.env.authToken, process.env.authToken);
 import SSM from "aws-sdk/clients/ssm";
 const ssm = new SSM();
@@ -63,7 +63,7 @@ export default async function main(event, context) {
 	return success({ status: true, twilioNumber: number});
 }
 
-function persistNumber(placeId, number) {
+async function persistNumber(placeId, number) {
 	//store new number in DB
 	const params = {
 		TableName: process.env.businessTable,
