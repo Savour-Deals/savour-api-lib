@@ -1,10 +1,10 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 var stripe = require('stripe')(process.env.stripeKey);
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body);
 	const business = await getBusiness(event.pathParameters.place_id);
 
 	if (!business){
@@ -72,13 +72,15 @@ export default async function main(event, context) {
 		};
 		try {
 
-			await dynamoDbLib.call("update", params);
+			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
+			console.log(e);
 			return failure({ status: false, error: e });
 		}
 	})
   .catch((err) => {
+		console.log(err);
 		//error occured, return error to caller
 		return failure({ status: false, error: err });
   });
@@ -95,7 +97,7 @@ async function getBusiness(placeID){
   };
 
   try {
-    const result = await dynamoDbLib.call("get", params);
+    const result = await dynamoDb.call("get", params);
     if (result.Item) {
       // Return the retrieved item
 			return result.Item;
@@ -103,6 +105,7 @@ async function getBusiness(placeID){
       return null;
     }
   } catch (e) {
+		console.log(e);
     return null;
   }
 

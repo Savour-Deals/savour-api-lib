@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { shortenUrl } from "../url_shortener";
+import * as dynamoDbLib from "../common/dynamodb-lib";
+import shorten from "../url/shorten";
 const client = require('twilio')(process.env.accountSid, process.env.authToken);
 
 
@@ -125,7 +125,7 @@ async function sendMessage(mobileNumber, content, twilioNumber, uuid, timestamp)
 	var messageBody = '';
 	const longUrl = `${process.env.longUrlDomain}/?a=${uuid}&b=${mobileNumber}`;
 
-	let shortUrl = await shortenUrl(longUrl, process.env.shortUrlDomain);
+	let shortUrl = await shorten(longUrl, process.env.shortUrlDomain);
 	if (shortUrl != ''){
 		// we created a link for this message!
 		let messageLink = `Redeem here: ${shortUrl}.`;

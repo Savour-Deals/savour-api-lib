@@ -1,8 +1,8 @@
 var stripe = require('stripe')(process.env.stripeKey);
-import { success, failure } from "../../common/response-lib";
+import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body);
 
 	return stripe.subscriptionItems.createUsageRecord(
 		data.subscription_item,
@@ -10,6 +10,7 @@ export default async function main(event, context) {
 	).then((usageRecord) => {
 		return success({ status: true, usageRecord: usageRecord });
 	}).catch((err) => {
+		console.log(err);
 		//error occured, return error to caller
 		return failure({ status: false, error: err });
   });

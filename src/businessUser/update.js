@@ -1,25 +1,33 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
-	const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body);
 	if (Object.keys(data).length > 0){
 		var updateExp = 'SET ';
 		var expAttVals = {};
 
 		//grab data to update
 		Object.entries(data).forEach(([key, value]) => {
-			updateExp  = updateExp + ' '+ key + ' = :' + key + ',';
-			expAttVals[':' +key] = value;
+			if (key === "businesses") {
+				// updateExp  = updateExp + ' ' + key + ' = list_append(' + key + ', :i),';
+				updateExp = `${updateExp} ${key} = list_append(${key}, :${key}),`;
+				expAttVals[`:${key}`] = [value];
+			} else {
+				updateExp  = updateExp + ' ' + key + ' = :' + key + ',';
+				expAttVals[':' +key] = value;
+			}
+			console.log(updateExp);
+			console.log(expAttVals);
 		});
 		//Remove trailing ,
 		updateExp = updateExp.substring(0, updateExp.length - 1);
 		const params = {
-			TableName: process.env.subscriberUserTable,
+			TableName: process.env.businessUserTable,
 			// 'Key' defines the partition key and sort key of the item to be retrieved
-    // - 'mobile_number': Mobile number identifying user
+			// - 'uid': User ID to identify a user by Cognito
 			Key: {
-				mobile_number: event.pathParameters.mobile_number,
+				uid: event.pathParameters.uid,
 			},
 			// 'UpdateExpression' defines the attributes to be updated
 			// 'ExpressionAttributeValues' defines the value in the update expression
@@ -32,9 +40,10 @@ export default async function main(event, context) {
 		};
 
 		try {
-			await dynamoDbLib.call("update", params);
+			await dynamoDb.call("update", params);
 			return success({ status: true });
 		} catch (e) {
+			console.log(e);
 			return failure({ status: false });
 		}
 	}else{

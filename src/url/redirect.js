@@ -1,4 +1,4 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
 
 export default async function main(event, context) {
 	const params = {
@@ -11,7 +11,7 @@ export default async function main(event, context) {
   };
 
   try {
-    const result = await dynamoDbLib.call("get", params);
+    const result = await dynamoDb.call("get", params);
     if (result.Item) {
       const url = response.Item.destination_url;
       const content = "<html><body>Moved: <a href=\"" + url + "\">" + url + "</a></body></html>"
@@ -21,6 +21,7 @@ export default async function main(event, context) {
       return {"content": content}
     }
   } catch (e) {
+    console.log(e);
     content = "<html><body><h1>404: Not Found!</h1></body></html>"
     return {"content": content}
   }

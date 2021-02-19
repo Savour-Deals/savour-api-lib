@@ -1,21 +1,22 @@
 const client = require('twilio')(process.env.accountSid, process.env.authToken);
-import { shortenUrl } from '../url_shortener/shorten.js';
+import shorten from '../url/shorten';
 
 export default async function main(event, context) {
-  console.log(event);
-  const dealInfo = event.body.dealInfo;
-  const twilioNumber = event.body.twilioNumber;
-  const subscribers = event.body.subscribers;
+	console.log(event);
+	const data = JSON.parse(event.body);
+  const dealInfo = data.dealInfo;
+  const twilioNumber = data.twilioNumber;
+  const subscribers = data.subscribers;
 
   for (const mobileNumber in subscribers) subscribers[mobileNumber].subscribed ? sendMessage(mobileNumber, dealInfo, twilioNumber) : null;
 	return event;
 }
 
-async function sendMessage(mobileNumber, content, twilioNumber){
+async function sendMessage(mobileNumber, content, twilioNumber) {
 	let messageBody = '';
 	const longUrl = `${process.env.longUrlDomain}/?a=${mobileNumber}`;
 
-	let shortUrl = await shortenUrl(longUrl, process.env.shortUrlDomain);
+	let shortUrl = await shorten(longUrl, process.env.shortUrlDomain);
 
 	if (shortUrl != '') {
 		let messageLink = `Redeem here: ${shortUrl}`;

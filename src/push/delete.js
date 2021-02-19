@@ -1,5 +1,5 @@
-import * as dynamoDbLib from "../../common/dynamodb-lib";
-import { success, failure } from "../../common/response-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
+import { success, failure } from "../common/response-lib";
 
 export default async function main(event, context) {
   const params = {
@@ -12,9 +12,10 @@ export default async function main(event, context) {
   };
 
   try {
-    await dynamoDbLib.call("delete", params);
+    await dynamoDb.call("delete", params);
     return success({ status: true });
   } catch (e) {
+    console.log(e);
     return failure({ status: false });
   }
 }

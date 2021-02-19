@@ -1,5 +1,5 @@
 const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-import * as dynamoDbLib from "../../common/dynamodb-lib";
+import * as dynamoDb from "../common/dynamodb-lib";
 
 function randomString(length) {
 	var result = '';
@@ -25,7 +25,7 @@ export default async function main(longUrl, shortUrlDomain) {
 				},
 				ConditionExpression: 'attribute_not_exists(unique_id)'
 			};
-			await dynamoDbLib.call("put", params);
+			await dynamoDb.call("put", params);
 			break;
 		} catch (e) {
 			console.log(e);
