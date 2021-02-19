@@ -4,7 +4,7 @@ import { success, failure } from "../common/response-lib";
 export default async function main(event, context) {
   console.log(event);
   console.log(context);
-  const data = event.body;
+  const data = JSON.parse(event.body);
   const params = {
     TableName: process.env.businessUserTable,
     Item: data

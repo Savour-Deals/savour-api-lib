@@ -6,7 +6,7 @@ const ssm = new SSM();
 
 export default async function main(event, context) {
 	//query for phone number in US
-	const data = event.body;
+  const data = JSON.parse(event.body);
 	console.log(data);
 
 	const placeId = event.pathParameters.place_id;

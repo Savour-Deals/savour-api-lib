@@ -4,7 +4,7 @@ import { success, failure } from "../common/response-lib";
 var stripe = require('stripe')(process.env.stripeKey);
 
 export default async function main(event, context) {
-	const data = event.body;
+  const data = JSON.parse(event.body);
 	const business = await getBusiness(event.pathParameters.place_id);
 
 	if (!business){

@@ -4,7 +4,7 @@ import { success, failure } from "../common/response-lib";
 var stripe = require('stripe')(process.env.stripeKey);
 
 export default async function main(event, context) {
-	const data = event.body;
+  const data = JSON.parse(event.body);
 	//Attach a new payment method to customer
 	return stripe.paymentMethods.attach(
 		data.payment_method,

@@ -2,10 +2,11 @@ const client = require('twilio')(process.env.accountSid, process.env.authToken);
 import shorten from '../url/shorten';
 
 export default async function main(event, context) {
-  console.log(event);
-  const dealInfo = event.body.dealInfo;
-  const twilioNumber = event.body.twilioNumber;
-  const subscribers = event.body.subscribers;
+	console.log(event);
+	const data = JSON.parse(event.body);
+  const dealInfo = data.dealInfo;
+  const twilioNumber = data.twilioNumber;
+  const subscribers = data.subscribers;
 
   for (const mobileNumber in subscribers) subscribers[mobileNumber].subscribed ? sendMessage(mobileNumber, dealInfo, twilioNumber) : null;
 	return event;
