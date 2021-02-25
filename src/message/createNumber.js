@@ -1,6 +1,6 @@
 import * as dynamoDbLib from "../common/dynamodb-lib";
 import { success, failure } from "../common/response-lib";
-const client = require('twilio')(process.env.authToken, process.env.authToken);
+const client = require('twilio')(process.env.accountSid, process.env.authToken);
 import SSM from "aws-sdk/clients/ssm";
 const ssm = new SSM();
 
@@ -9,17 +9,15 @@ export default async function main(event, context) {
   const data = JSON.parse(event.body);
 	console.log(data);
 
-	const placeId = event.pathParameters.place_id;
+	const placeId = data.place_id;
 	const stage = process.env.stage;
 
 	var number;
 	if (stage == 'dev') {
 		number = '+123456789';
 	} else {
-		var twilioNumberResource;
-	
-		try {
-			twilioNumberResource = await client.availablePhoneNumbers('US').local
+		const url = await ssm.getParameter(`/api/execute-url/${scope.stage}`).promise();
+		number = await client.availablePhoneNumbers('US').local
 			.list({
 				// nearLatLong: '37.840699, -122.461853',
 				// distance: 50,
@@ -28,31 +26,22 @@ export default async function main(event, context) {
 				// inRegion: 'CA',
 				limit: 1
 			})
-			.then(local => local[0])
+			.then(local => {
+				var resource = local[0];
+
+				const webhook = url + process.env.path;
+				//provision phone number
+				return client.incomingPhoneNumbers.create({
+					phoneNumber: resource.phoneNumber,
+					friendlyName: placeId,
+					smsUrl: webhook
+				});
+			}).then(p => p.phoneNumber)
 			.catch((err) => {
 				//error occured, return error to caller
 				console.log(err);
 				return failure({ status: false, error: err });
 			});
-		} catch (error) {
-			console.log(error);
-			return failure({status: false, error});
-		}
-
-		const url = await ssm.getParameter(`/api/execute-url/${scope.stage}`).promise();
-		const webhook = url + process.env.path;
-		//provision phone number
-		number = await client.incomingPhoneNumbers.create({
-			phoneNumber: twilioNumberResource.phoneNumber,
-			friendlyName: placeId,
-			smsUrl: webhook
-		})
-		.then(p => p.phoneNumber)
-		.catch((err) => {
-				//error occured, return error to caller
-				console.log(err);
-				return failure({ status: false, error: err });
-		});
 	}
 
 	try {
