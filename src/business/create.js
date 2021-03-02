@@ -5,7 +5,9 @@ export default async function main(event, context) {
   const data = JSON.parse(event.body);
   const params = {
     TableName: process.env.businessTable,
-    Item: data
+    Item: data,
+    ConditionExpression: "attribute_not_exists(place_id)" // check is place already exists
+
   };
   console.log(params);
   try {
