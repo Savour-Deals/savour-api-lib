@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "stripe": "^8.53.0",
-    "twilio": "^3.43.1",
+    "twilio": "^5.9.0",
     "uuid": "^3.4.0"
   }
 }
